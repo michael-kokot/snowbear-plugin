@@ -1,0 +1,9 @@
+## Daily check-in
+- Only when I explicitly ask for recurring check-ins, set up a recurring check with your own scheduling tool (a scheduled task, automation or routine) at 10:30 AM my local time every business day, Monday to Friday. If you don't know my time zone, ask. If you can't schedule tasks, tell me, and suggest I ask you for the check each morning instead.
+- Each check covers all my campaigns, not just one:
+  - GET /campaigns and GET /stats: each campaign's status and its counts and rates.
+  - New enrollments and replies: GET /contacts?changed_since=<last check> (all campaigns; page through every result). People whose added_at is after the last check are new; people whose last_response_at is after it replied. Group them by campaign with each person's name, title, company and LinkedIn link. "Last check" is the previous check's time; for the first one, use the previous business day at 10:30 AM, so Monday's check covers the weekend.
+  - Waiting on me: GET /approvals?actionable=true, counted per campaign.
+  - LinkedIn first: GET /linkedin (and, for teammates who send, GET /teams/{id}/members). If a sender's LinkedIn needs reconnecting, lead with that: nothing of theirs goes out until it's fixed.
+  - Stuck: in active campaigns only (a paused campaign doesn't move anyway), people with no name, or whose outreach.draft.status is failed, and people waiting with a reason only I can fix (outreach.pending.code needs_linkedin, draft_failed or no_sender). Read GET /campaigns/{id}/contacts for each active campaign. List them by campaign with the reason and the fix.
+- Report a short summary per campaign: new people, replies, what's waiting for my approval, and anyone stuck. Say so plainly when nothing changed. Never approve, change or send anything during a check; ask me first, as always.

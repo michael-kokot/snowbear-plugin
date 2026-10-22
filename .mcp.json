@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "snowbear": {
+      "type": "http",
+      "url": "https://www.snowbear.ai/mcp"
+    }
+  }
+}

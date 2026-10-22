@@ -1,0 +1,11 @@
+{
+  "name": "snowbear",
+  "displayName": "SnowBear",
+  "version": "0.1.0",
+  "description": "Find relevant companies and contacts, uncover warm connections, and coordinate outreach across LinkedIn and email with SnowBear. Draft personalized notes, send messages, engage relevant contacts, and manage follow-up in one workflow. Supports sales, hiring, and job seeking.",
+  "author": {
+    "name": "SnowBear",
+    "url": "https://www.snowbear.ai"
+  },
+  "license": "Proprietary"
+}

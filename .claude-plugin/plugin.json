@@ -7,6 +7,11 @@
     "name": "SnowBear",
     "url": "https://www.snowbear.ai"
   },
+  "homepage": "https://www.snowbear.ai",
+  "repository": "https://github.com/michael-kokot/snowbear-plugin",
+  "supportUrl": "https://www.snowbear.ai/support",
   "privacyPolicyUrl": "https://www.snowbear.ai/privacy",
+  "documentationUrl": "https://www.snowbear.ai/ai",
+  "termsOfServiceUrl": "https://www.snowbear.ai/terms",
   "license": "Proprietary"
 }

@@ -15,7 +15,7 @@ Use relevant references only: [guide index](references/guide-index.md), [anthrop
 
 ## Setup and account handoff
 
-Before get_me, give a user-visible thank-you, acknowledge setup and explain the access check, even if you already announced skill use. Example: "Thanks, I have your request. I am checking SnowBear access and saved campaign status." Keep updates short and truthful between stages, after sign-in and during delays when supported. Claim verified access only after success. Keep tool names, API paths and version fields internal in ordinary setup messages; perform checks yourself. Explain technical details only when requested or needed to fix an error.
+Before get_me, give a user-visible thank-you, acknowledge setup and explain the access check. Keep updates short and truthful after sign-in and during delays. Claim verified access only after success. Keep tool names, API paths and version fields internal unless requested or needed to fix an error.
 
 Call get_me (REST: GET /me) for the intended environment; docs alone cannot verify readiness. Reuse onboarded identity/background. Present unconfirmed candidates or ask for a personal LinkedIn URL. Confirm only after the user's choice using current option_number and presentation_version; reread stale choices. Pending enrichment needs no reconfirmation. Identity and live LinkedIn sending are separate.
 
@@ -34,6 +34,8 @@ Finish authorized stages. Once goal and audience are clear, offer two simple nex
 5. **Follow through.** Use [reporting](references/reporting.md) for delivery, replies, approvals and blockers. For later reviews, offer one supported next step. Activation, increased volume and recurring check-ins require a covering request.
 
 ## Essential operating boundaries
+
+Assist recipient-relevant professional outreach. Refuse spam, deceptive campaigns and indiscriminate bulk messaging. Honor opt-outs and refusals; never evade them via another account/channel or bypass sending limits.
 
 Keep work scoped to the named list and its owner/team; never substitute all saved contacts for an inaccessible list. See [list scope](references/saved-contact-analysis.md) for network selection and exceptions. Read all next_cursor pages before claiming totals unless authoritative totals are returned.
 

@@ -92,7 +92,7 @@ Tool: `verify_job`
 
 `GET /jobs/verify` (needs the read scope)
 
-Reads the posting and says whether the job is open, closed or unverified, with the posting's own title, company, location, salary and dates. When the link is a job board and you pass company and title, SnowBear first looks for the employer's own posting and reads that. The employer's job board (Ashby, Greenhouse, Lever, BambooHR) decides when it lists the job or has removed it; an expired posting is closed; otherwise a model reads the page. Job boards that only copy postings can't confirm a job, so those come back unverified. decided_by says which rule decided. Takes 5 to 40 seconds. Free for now.
+Reads the posting and says whether the job is open, closed or unverified, with the posting's own title, company, location, salary and dates. When the link is a job board and you pass company and title, SnowBear first looks for the employer's own posting and reads that. The employer's job board (Ashby, Greenhouse, Lever, BambooHR) decides when it lists the job or has removed it; an expired posting is closed; otherwise a model reads the page. Job boards that only copy postings can't confirm a job, so those come back unverified. decided_by says which rule decided. Takes 5 to 40 seconds. Free for now. SnowBear API reference: https://www.snowbear.ai/api-reference#jobs.
 
 ## Parameters
 - `url` (string, query, required): The posting's link.

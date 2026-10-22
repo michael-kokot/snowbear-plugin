@@ -234,7 +234,7 @@ Tool: `approve_outreach`
 
 `POST /campaigns/{campaign_id}/contacts/approve` (needs the write scope)
 
-Approves up to 25 people's waiting messages. SnowBear asks for approval once per person: after you approve, the rest of their sequence sends on its own (later_steps_need_approval comes back false). To review a later message before it goes out, call Require approval for that person again. Each person needs the version you read, from List approvals or their sequence: if their draft changed since, that person comes back version_conflict and nothing is approved. A person who already has live outreach in another campaign comes back conflict, so nobody is contacted twice. Each result's outcome is one of: approved, version_conflict, not_waiting_for_approval, paused, conflict, busy, outreach_ended, no_outreach (in the campaign, but their outreach hasn't been created yet), not_found (not in the campaign), invalid, error.
+Approves up to 25 people's waiting messages. SnowBear asks for approval once per person: approval covers the remaining sequence under its saved schedule and holds (later_steps_need_approval comes back false). To review a later message before it goes out, call Require approval for that person again. Each person needs the version you read, from List approvals or their sequence: if their draft changed since, that person comes back version_conflict and nothing is approved. A person who already has live outreach in another campaign comes back conflict, so nobody is contacted twice. Each result's outcome is one of: approved, version_conflict, not_waiting_for_approval, paused, conflict, busy, outreach_ended, no_outreach (in the campaign, but their outreach hasn't been created yet), not_found (not in the campaign), invalid, error.
 
 ## Parameters
 - `campaign_id` (string, path, required): The campaign's id, from GET /campaigns.
@@ -306,7 +306,7 @@ Approval releases the entire remaining sequence, not just the next message. Use 
 
 ## How to use it
 
-- POST /campaigns/{id}/contacts/approve: {"contacts": [{"contact_id", "version"}]}. SnowBear asks for approval once per person: after approval the rest of their sequence sends on its own. To review a later message, call require-approval for them again. Each approved result has scheduled_for (when the next message goes out, on the campaign's schedule and daily limits). version must be the one I was shown; a changed draft comes back version_conflict. Outcomes: approved, version_conflict, not_waiting_for_approval, paused, conflict (live outreach in another campaign), busy, outreach_ended, no_outreach (in the campaign, but their outreach hasn't been created yet), not_found (not in the campaign), invalid, error.
+- POST /campaigns/{id}/contacts/approve: {"contacts": [{"contact_id", "version"}]}. SnowBear asks for approval once per person; approval authorizes that person's remaining sequence under its saved schedule and holds. To review a later message, call require-approval for them again. Each approved result has scheduled_for (when the next message goes out, on the campaign's schedule and daily limits). version must be the one I was shown; a changed draft comes back version_conflict. Outcomes: approved, version_conflict, not_waiting_for_approval, paused, conflict (live outreach in another campaign), busy, outreach_ended, no_outreach (in the campaign, but their outreach hasn't been created yet), not_found (not in the campaign), invalid, error.
 
 ## Example request body
 ```json
@@ -631,7 +631,7 @@ Holds up to 25 people's next message until someone approves it, clearing its sen
 
 ## How to use it
 
-- POST /campaigns/{id}/contacts/require-approval: same body. Holds their next message until it's approved; after that approval the rest of their sequence sends on its own again.
+- POST /campaigns/{id}/contacts/require-approval: same body. Holds their next message until it's approved; that approval again covers the remaining sequence under its saved schedule and holds.
 
 ## Example request body
 ```json

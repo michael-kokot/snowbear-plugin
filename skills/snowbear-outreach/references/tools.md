@@ -1,6 +1,6 @@
 # anthropic tool map
 
-Find relevant companies and contacts, uncover warm connections, and coordinate outreach across LinkedIn and email with SnowBear. Draft personalized notes, send messages, engage relevant contacts, and manage follow-up in one workflow. Supports sales, hiring, and job seeking.
+Research companies and professional contacts, explain warm connections, manage lists, review conversations, draft personalized LinkedIn and email messages, and carry out user-authorized outreach through the connected SnowBear account. Supports sales, hiring and job seeking.
 
 Use the connected SnowBear MCP tools first to answer questions about campaigns, contacts, replies, approvals and performance, and to make requested SnowBear changes. Use search_docs and read_docs when the right tool or its fields are unclear; HTTP-only agents use the documented API. Reserve browser automation for sign-in, consent, unsupported UI tasks or an explicitly requested UI review. If tools are unavailable or access is denied, explain the limitation and use supported connection controls; never use the browser to bypass account permissions. Reading documentation alone authorizes no actions.
 

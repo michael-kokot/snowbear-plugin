@@ -1290,7 +1290,7 @@ Activation can start discovery and outreach. senders replaces the complete sende
 - PATCH /campaigns/{id}: change any of those fields except team_id.
   - status can be active, paused, or completed.
   - Send only the fields that change.
-  - For requested discovery changes, update the relevant targeting or selected people-search link here. Change new_people_per_day only when the user has requested that daily target; more-leads requests do not implicitly change sending volume or activation. To add specific people I give you, use POST /campaigns/{id}/contacts.
+  - For requested targeting or search-source changes, update only those fields here. More leads matching the current criteria do not authorize changing those criteria. Change new_people_per_day only when the user has requested that daily target; more-leads requests do not implicitly change sending volume or activation. To add specific people I give you, use POST /campaigns/{id}/contacts.
   - senders replaces the whole list: anyone left out stops sending (their unsent drafts are cancelled; outreach already under way continues). Read the campaign first and send the full list.
   - To add a teammate as a sender (someone whose LinkedIn sends for the campaign), PATCH senders with the current senders plus them. It works on paused campaigns. A sender must be a confirmed member of the campaign's team (check GET /teams/{team_id}/members with the campaign's team_id); someone with a pending invitation, or on a different team, can't send until they join that team. Never use POST /campaigns/{id}/contacts for this: that adds prospects to be contacted.
   - A new sequence_id applies to people who haven't started yet.

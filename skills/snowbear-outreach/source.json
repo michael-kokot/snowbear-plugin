@@ -1,6 +1,6 @@
 {
-  "generatorVersion": 13,
+  "generatorVersion": 14,
   "platform": "anthropic",
   "baseUrl": "https://mrnihnyyyhorznwzebep.supabase.co/functions/v1/snowbear-api/v1",
-  "sourceHash": "e6f20223d0a88c3403773282546e7faba4d7511adedb49586d6628789479564e"
+  "sourceHash": "15b7424badc87a01786f165ebc7aec9c6380b73bd014d595238e50e06060c24a"
 }

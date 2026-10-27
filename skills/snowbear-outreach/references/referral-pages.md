@@ -640,7 +640,7 @@ Tool: `api_get`
 
 `GET /referral-searches/{search_id}/candidates` (needs the read scope)
 
-The people a search found, ranked, with everything needed to review them: bucket, fit and relationship_with_connector (each with its reason), intent when SnowBear found buying signals, their profile (title, company, about, recent roles, education, skills), and other_analyses from the search's list. bucket is high, medium, low, not_fit, or analyzing (still being reviewed); fit leads, so a weak fit is never high however well the connector knows them. Works while the search is still running (summary.ready is false until rating starts). summary.buckets counts every bucket, and summary.page is the search's page. Up to 50 per page. Company details use the same matched LinkedIn company evidence as referral exports: full description, reported employee_count_range (employees is its compatibility alias), company location and specialties. evidence gives status, provider, checked_at and source_url; missing_fields lists unknown company facts. Missing or expired evidence is never filled from older company research. These reads start no enrichment. assessment contains the saved campaign fit, display priority (Potential fit or Worth a look), rationale, employment_basis, reviewed_employment, qualification_checks and qualification_gaps; employment_verification_status flags a changed or ended job. Pass campaign_id to get_person to select a unique completed canonical review; without it no campaign verdict is chosen implicitly. Profile title/company follow that reviewed job when a review is selected, including concurrent jobs. Experience entries have matching zero-based experience_index references. Raw provider payloads and internal prompts are not returned.
+The people a search found, ranked, with everything needed to review them: bucket, fit and relationship_with_connector (each with its reason), intent when SnowBear found buying signals, their profile (title, company, about, recent roles, education, skills), and other_analyses from the search's list. bucket is high, medium, low, not_fit, or analyzing (still being reviewed); fit leads, so a weak fit is never high however well the connector knows them. Fit comes from an AI search on the search's list: by default the one comparing people to the search's campaign (or its review brief); summary.ranked_by names it with its criteria, status, progress and counts, and summary.rankings lists this search's rankings. Pass ai_search_id to rank by another (one from summary.rankings, or an AI search you ran on the search's list). fit.criteria has one line per criterion ({label, level}: high, medium, low, unclear, or error for not rated) and fit.reason joins them; fit.status is waiting_for_profile (not rated yet: the profile is still loading) or rating while a person has no fit yet, and thin_profile marks a sparse profile. People are always sorted by fit, best first. Searches that started before AI rankings keep their earlier campaign review (fit.criteria empty) until their fit search has finished rating; meanwhile ranked_by is null and summary.fit_ranking_in_progress shows that fit search's progress. Works while the search is still running (summary.ready is false until rating starts). summary.buckets counts every bucket, and summary.page is the search's page. Up to 50 per page. Company details use the same matched LinkedIn company evidence as referral exports: full description, reported employee_count_range (employees is its compatibility alias), company location and specialties. evidence gives status, provider, checked_at and source_url; missing_fields lists unknown company facts. Missing or expired evidence is never filled from older company research. These reads start no enrichment. assessment contains the saved campaign fit, display priority (Potential fit or Worth a look), rationale, employment_basis, reviewed_employment, qualification_checks and qualification_gaps; employment_verification_status flags a changed or ended job. Pass campaign_id to get_person to select a unique completed canonical review; without it no campaign verdict is chosen implicitly. Profile title/company follow that reviewed job when a review is selected, including concurrent jobs. Experience entries have matching zero-based experience_index references. Raw provider payloads and internal prompts are not returned.
 
 ## Parameters
 - `search_id` (string, path, required): The referral search's id, from GET /referral-searches.
@@ -667,7 +667,15 @@ The people a search found, ranked, with everything needed to review them: bucket
     "description": "all (default), high, medium, low, not_fit, analyzing, or on_page."
   }
   ```
-- `sort` (string, query, optional): fit (default), relationship, or relevance (needs query).
+- `ai_search_id` (string, query, optional): Rank by this AI search instead of the default (an ai_search_id from summary.rankings, or an AI search you ran on this search's list).
+  ```json
+  {
+    "type": "string",
+    "description": "Rank by this AI search instead of the default (an ai_search_id from summary.rankings, or an AI search you ran on this search's list).",
+    "format": "uuid"
+  }
+  ```
+- `sort` (string, query, optional): Deprecated and ignored (people are always sorted by fit); sending it adds a deprecated_field warning.
   ```json
   {
     "type": "string",
@@ -676,10 +684,10 @@ The people a search found, ranked, with everything needed to review them: bucket
       "relationship",
       "relevance"
     ],
-    "description": "fit (default), relationship, or relevance (needs query)."
+    "description": "Deprecated and ignored (people are always sorted by fit); sending it adds a deprecated_field warning."
   }
   ```
-- `query` (string, query, optional): Find people by name, title, company or meaning ("payments leaders").
+- `query` (string, query, optional): Keyword filter: keeps people whose name, title, headline or company contains these words (name and company also allow small typos); the order stays by fit, and summary.buckets still counts everyone. To rank by something else, run an AI search on the search's list and pass ai_search_id.
 - `limit` (integer, query, optional): Items per page, 1 to 50. Defaults to 50.
   ```json
   {
@@ -761,7 +769,24 @@ Search text uses query; q and search are aliases. A generic api_get query string
       "fit": {
         "label": "High",
         "tier": "high",
-        "reason": "Runs payments at a mid-size fintech, the buyer this campaign targets."
+        "reason": "High - Leads payments or finance operations; High - Works at a mid-size fintech; Medium - Based in the US",
+        "criteria": [
+          {
+            "label": "Leads payments or finance operations",
+            "level": "high"
+          },
+          {
+            "label": "Works at a mid-size fintech",
+            "level": "high"
+          },
+          {
+            "label": "Based in the US",
+            "level": "medium"
+          }
+        ],
+        "score": 0.81,
+        "thin_profile": false,
+        "status": null
       },
       "relationship_with_connector": {
         "label": "High",
@@ -884,7 +909,65 @@ Search text uses query; q and search are aliases. A generic api_get query string
       "people_count": 4,
       "version": 6
     },
-    "connector_name": "Jane Doe"
+    "connector_name": "Jane Doe",
+    "ranked_by": {
+      "ai_search_id": "00000000-0000-4000-8000-000000000901",
+      "name": "Payments Leaders fit",
+      "kind": "campaign_fit",
+      "is_default": true,
+      "question": null,
+      "campaign": {
+        "id": "00000000-0000-4000-8000-000000000902",
+        "name": "Payments Leaders"
+      },
+      "criteria": [
+        {
+          "key": "role",
+          "label": "Leads payments or finance operations",
+          "description": "Owns payments, treasury or finance operations."
+        },
+        {
+          "key": "company",
+          "label": "Works at a mid-size fintech",
+          "description": "A fintech of 200 to 2,000 people."
+        },
+        {
+          "key": "location",
+          "label": "Based in the US",
+          "description": null
+        }
+      ],
+      "status": "completed",
+      "progress": {
+        "total": 50,
+        "rated": 50,
+        "pending": 0
+      },
+      "counts": {
+        "high": 34,
+        "medium": 16,
+        "low": 0,
+        "not_rated": 0
+      },
+      "thin_profiles": 2
+    },
+    "fit_ranking_in_progress": null,
+    "rankings": [
+      {
+        "ai_search_id": "00000000-0000-4000-8000-000000000901",
+        "name": "Payments Leaders fit",
+        "kind": "campaign_fit",
+        "is_default": true,
+        "question": null,
+        "created_at": "2026-10-23T15:04:05.000Z",
+        "counts": {
+          "high": 34,
+          "medium": 16,
+          "low": 0,
+          "not_rated": 0
+        }
+      }
+    ]
   }
 }
 ```

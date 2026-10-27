@@ -195,6 +195,14 @@ Creates a sequence you can attach to campaigns with sequence_id. Steps run in or
           ],
           "maxLength": 8000
         },
+        "attachment_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uuid",
+          "description": "One uploaded file on send_message; null removes it."
+        },
         "subject": {
           "type": [
             "string",
@@ -907,7 +915,7 @@ Creates a sequence you can attach to campaigns with sequence_id. Steps run in or
 ## How to use it
 
 - POST /sequences: create a sequence.
-  - Body: {"name", "description", "steps": [{"action": "send_connection" | "send_message" | "send_email" | "view_profile" | "like_post" | "wait", "message", "subject", "ai_instructions", "fallback_message", "fallback_subject", "wait_hours"}]}.
+  - Body: {"name", "description", "steps": [{"action": "send_connection" | "send_message" | "send_email" | "view_profile" | "like_post" | "wait", "message", "subject", "ai_instructions", "fallback_message", "fallback_subject", "wait_hours", "attachment_id"}]}.
   - Message steps require fallback_message; email steps also require fallback_subject. Connection-request fallbacks are optional, including when a note is supplied. Fallback copy is prepared in case personalization cannot produce usable copy and, when used, sends exactly as written under existing approval rules. It must contain no { or }.
   - A message can use placeholders like {first_name} and {company}; SnowBear fills them per person and keeps the rest of the text exactly. Or give ai_instructions instead of message: plain-language guidance (no placeholders needed) that SnowBear uses to write the message for each person.
   - Rules: at most one connection request (note up to 300 characters, or no note), emails with a written message need a subject, waits up to 720 hours, up to 20 steps.
@@ -1277,6 +1285,14 @@ Changes a sequence's name, description or steps. steps is the complete new list,
             "null"
           ],
           "maxLength": 8000
+        },
+        "attachment_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uuid",
+          "description": "One uploaded file on send_message; null removes it."
         },
         "subject": {
           "type": [
@@ -2006,6 +2022,7 @@ Shared sequence edits reach people who have not started across every campaign us
   - Body: any of {"name", "description", "steps"}, plus "expected_updated_at" (the updated_at you read). steps is the complete new list in the create shape and replaces the old one, so send every step, not only the changed ones.
   - Message steps require fallback_message; email steps also require fallback_subject. Connection-request fallbacks are optional, including when a note is supplied. Fallback copy is prepared in case personalization cannot produce usable copy and, when used, sends exactly as written under existing approval rules. It must contain no { or }. Full step lists validate every step. Name and description edits can leave unrelated legacy copy alone.
   - It applies everywhere the sequence is used: people who haven't started get the new version (their unsent drafts are rewritten too, up to 25 per edit), and anyone part-way through keeps the version they started.
+  - Changing a shared attachment default keeps all existing contacts on their assigned version, including those who have not started. New contacts receive the new default. Contact edits stay independent.
   - The response's changes {contacts_on_new_version, drafts_refreshing, contacts_kept_on_previous_version, contacts_pause_updated, contacts_kept_own_pause, campaigns_using} says who it affected. contacts_kept_own_pause counts people with their own version of the sequence whose pause setting a pause change didn't touch.
   - Only sequences with editable true can be changed. SnowBear templates can't; create a copy with POST /sequences instead.
   - On 409 version_conflict, GET the sequence again, reapply the edit, and send the new updated_at.

@@ -1,7 +1,7 @@
 {
   "name": "snowbear",
   "displayName": "SnowBear",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Research companies and professional contacts, explain warm connections, manage lists, review conversations, draft personalized LinkedIn and email messages, and carry out user-authorized outreach through the connected SnowBear account. Supports sales, hiring and job seeking.",
   "author": {
     "name": "SnowBear",
@@ -9,9 +9,5 @@
   },
   "homepage": "https://www.snowbear.ai",
   "repository": "https://github.com/michael-kokot/snowbear-plugin",
-  "supportUrl": "https://www.snowbear.ai/support",
-  "privacyPolicyUrl": "https://www.snowbear.ai/privacy",
-  "documentationUrl": "https://www.snowbear.ai/ai",
-  "termsOfServiceUrl": "https://www.snowbear.ai/terms",
   "license": "Proprietary"
 }

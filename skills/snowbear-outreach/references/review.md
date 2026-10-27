@@ -678,9 +678,20 @@ Tool: `api_change`
 
 `PATCH /campaigns/{campaign_id}/contacts/{contact_id}/sequence/steps/{position}` (needs the write scope)
 
-Changes the text (and, for an email, the subject) of one step that hasn't been sent, for this person only: if they're on a shared sequence, they get their own copy first, so nobody else changes. A step SnowBear was going to write when it sends becomes your text. The same rules as sequences apply ({placeholders}, the 300-character connection note). Approval doesn't change: if their next message was already approved, it sends with your edit. Returns their sequence. Someone whose outreach hasn't been created yet is a 409 no_outreach: read their preview instead, and edit once their outreach exists. Omitted fallback fields preserve saved values; the resulting edited message/email step must have valid fallback copy. Message steps require fallback_message; email steps also require fallback_subject. Connection-request fallbacks are optional, including when a note is supplied. Fallback copy is prepared in case personalization cannot produce usable copy and, when used, sends exactly as written under existing approval rules. It must contain no { or }.
+Changes the text (and, for an email, the subject) of one step that hasn't been sent, for this person only: if they're on a shared sequence, they get their own copy first, so nobody else changes. A step SnowBear was going to write when it sends becomes your text. The same rules as sequences apply ({placeholders}, the 300-character connection note). Text-only edits retain their existing approval behavior. Adding, replacing or removing a file, or editing a caption with a file, clears approval and holds sending for renewed review. Returns their sequence. Someone whose outreach hasn't been created yet is a 409 no_outreach: read their preview instead, and edit once their outreach exists. Omitted fallback fields preserve saved values; the resulting edited message/email step must have valid fallback copy. Message steps require fallback_message; email steps also require fallback_subject. Connection-request fallbacks are optional, including when a note is supplied. Fallback copy is prepared in case personalization cannot produce usable copy and, when used, sends exactly as written under existing approval rules. It must contain no { or }.
 
 ## Parameters
+- `attachment_id` (string, body, optional): One ready uploaded file ID for a LinkedIn Send message step. Omit to preserve; null removes it. Changing a file clears approval.
+  ```json
+  {
+    "type": [
+      "string",
+      "null"
+    ],
+    "format": "uuid",
+    "description": "One ready uploaded file ID for a LinkedIn Send message step. Omit to preserve; null removes it. Changing a file clears approval."
+  }
+  ```
 - `campaign_id` (string, path, required): The campaign's id, from GET /campaigns.
   ```json
   {
@@ -911,7 +922,7 @@ Tool: `api_change`
 
 `POST /campaigns/{campaign_id}/contacts/change-sequence` (needs the write scope)
 
-Switches up to 25 people to their own copy of a saved sequence (sequence_id, from GET /sequences); the saved sequence itself never changes. They start the new sequence from its first step, so someone already messaged gets its first message too (a leading connection request is skipped when they're already connected); what was sent before stays in their history. Their next message waits for approval before anything goes out. Each result's outcome is one of: changed, conflict, busy, sequence_not_usable, refused, outreach_ended, no_outreach (in the campaign, but their outreach hasn't been created yet), not_found (not in the campaign), invalid, error.
+Switches up to 25 people to their own copy of a saved sequence (sequence_id, from GET /sequences); the saved sequence itself never changes. They start the new sequence from its first step, so someone already messaged gets its first message too (a leading connection request is skipped when they're already connected); what was sent before stays in their history. Approval doesn't change: someone already approved keeps sending on schedule with the new copy, and someone waiting for approval still waits. To review the new copy before anything sends, hold them first with POST /campaigns/{campaign_id}/contacts/require-approval; the hold carries through the switch. Each result's outcome is one of: changed, conflict, busy, sequence_not_usable, refused, outreach_ended, no_outreach (in the campaign, but their outreach hasn't been created yet), not_found (not in the campaign), invalid, error.
 
 ## Parameters
 - `campaign_id` (string, path, required): The campaign's id, from GET /campaigns.
@@ -980,11 +991,11 @@ Switches up to 25 people to their own copy of a saved sequence (sequence_id, fro
   ```
 
 ## Preconditions and effects
-Restarts each person's sequence at step one, potentially repeating an opener already sent, and holds the next message for approval.
+Restarts each person's sequence at step one, potentially repeating an opener already sent. Approval is unchanged: approved people send the new copy on schedule without another review, so call require-approval first when the new copy should be reviewed.
 
 ## How to use it
 
-- POST /campaigns/{id}/contacts/change-sequence: {"sequence_id", "contacts": [...]}: switches people to their own copy of a saved sequence. They start it from its first step (so someone already messaged gets its opener too), and their next message waits for approval. Outcomes: changed, conflict, busy, sequence_not_usable, refused, outreach_ended, no_outreach, not_found, invalid, error.
+- POST /campaigns/{id}/contacts/change-sequence: {"sequence_id", "contacts": [...]}: switches people to their own copy of a saved sequence. They start it from its first step (so someone already messaged gets its opener too), and their approval doesn't change: someone already approved keeps sending on schedule with the new copy, and someone waiting for approval still waits. To review the new copy first, hold them with require-approval before switching; the hold carries through the switch. Outcomes: changed, conflict, busy, sequence_not_usable, refused, outreach_ended, no_outreach, not_found, invalid, error.
 
 ## Example request body
 ```json
@@ -1023,7 +1034,7 @@ Restarts each person's sequence at step one, potentially repeating an opener alr
       "outcome": "changed",
       "contact_id": "00000000-0000-4000-8000-000000000015",
       "sequence_id": "00000000-0000-4000-8000-000000000027",
-      "approval_required": true
+      "approval_required": false
     }
   ]
 }

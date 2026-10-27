@@ -855,6 +855,14 @@ Tool: `send_contact_linkedin_action`
 Only after explicit authorization of the exact recipient, action and final text. Uses a durable idempotency key and native quality, duplicate, connection, hold and allowance checks. Queued or scheduled is not sent. blocker is null or {code, message, fixable_by}: show its message. Connecting LinkedIn alone grants no sending permission. Does not enable campaign outreach.
 
 ## Parameters
+- `attachment_id` (string, body, optional): One ready private file ID, for send_message only. The exact file must be included in user authorization. text may be empty for a file-only message.
+  ```json
+  {
+    "type": "string",
+    "format": "uuid",
+    "description": "One ready private file ID, for send_message only. The exact file must be included in user authorization. text may be empty for a file-only message."
+  }
+  ```
 - `contact_id` (string, path, required): Stable SnowBear ID from a previous read.
   ```json
   {
@@ -955,11 +963,26 @@ Only after explicit authorization of the exact recipient, action and final text.
         ]
       },
       "then": {
-        "properties": {
-          "text": {
-            "minLength": 1
+        "anyOf": [
+          {
+            "required": [
+              "attachment_id"
+            ],
+            "properties": {
+              "attachment_id": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          },
+          {
+            "properties": {
+              "text": {
+                "minLength": 1
+              }
+            }
           }
-        }
+        ]
       }
     }
   ]

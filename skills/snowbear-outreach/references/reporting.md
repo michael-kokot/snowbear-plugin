@@ -879,7 +879,7 @@ Starts buying-intent research for one person in one campaign, the same research 
 - `refresh` (boolean, body, optional): true to research again even if a recent result exists.
 
 ## Preconditions and effects
-Starts persisted, potentially billable research. An explicit refresh replaces the current intent state, and an enrolled contact can be rebound to the resulting intent target and have its intent hold cleared. started means poll the read endpoint; ready reuses a recent result. not_run is not evidence of absent intent.
+Starts persisted, potentially billable research. An explicit refresh can replace the currently published intent result and consume credits; it does not approve or send outreach. started means poll the read endpoint; ready reuses a recent result. not_run is not evidence of absent intent.
 
 ## How to use it
 
